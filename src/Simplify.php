@@ -11,27 +11,32 @@ namespace bigDream\simplify;
  * http://mourner.github.io/simplify-js
 */
 
-class Simplify {
+class Simplify
+{
+    public function __construct(protected string $xField = 'x', protected string $yField = 'y')
+    {
+
+    }
 
 	/**
-	 * @param array $points
+	 * @param array     $points
 	 * @param float|int $tolerance
-	 * @param bool $highestQuality
+	 * @param bool      $highestQuality
 	 * @return array
 	 */
-	public static function run(array $points, $tolerance = 1, $highestQuality = false) {
+	public function run(array $points, float|int $tolerance = 1, bool $highestQuality = false): array
+    {
 		if (count($points) <= 1) return $points;
 
-		$sqTolerance = $tolerance*$tolerance;
+		$sqTolerance = $tolerance * $tolerance;
 
-		$points = $highestQuality ? $points : self::simplifyRadialDist($points, $sqTolerance);
-		$points = self::simplifyDouglasPeucker($points, $sqTolerance);
-
-		return $points;
+		$points = $highestQuality ? $points : $this->simplifyRadialDist($points, $sqTolerance);
+        return $this->simplifyDouglasPeucker($points, $sqTolerance);
 	}
 
 	// basic distance-based simplification
-	private static function simplifyRadialDist($points, $sqTolerance) {
+	private function simplifyRadialDist(array $points, float|int $sqTolerance): array
+    {
 
 		$prevPoint = $points[0];
 		$newPoints = array($prevPoint);
@@ -40,7 +45,7 @@ class Simplify {
 		for ($i = 1, $len = count($points); $i < $len; $i++) {
 			$point = $points[$i];
 
-			if (self::getSqDist($point, $prevPoint) > $sqTolerance) {
+			if ($this->getSqDist($point, $prevPoint) > $sqTolerance) {
 				$newPoints[] = $point;
 				$prevPoint = $point;
 			}
@@ -52,16 +57,17 @@ class Simplify {
 	}
 
 	// square distance between 2 points
-	private static function getSqDist($p1, $p2) {
-
-		$dx = $p1['x'] - $p2['x'];
-		$dy = $p1['y'] - $p2['y'];
+	private function getSqDist(array $p1, array $p2): float|int
+    {
+		$dx = $p1[$this->xField] - $p2[$this->xField];
+		$dy = $p1[$this->yField] - $p2[$this->yField];
 
 		return $dx * $dx + $dy * $dy;
 	}
 
 	// simplification using optimized Douglas-Peucker algorithm with recursion elimination
-	private static function simplifyDouglasPeucker($points, $sqTolerance) {
+	private function simplifyDouglasPeucker($points, $sqTolerance): array
+    {
 
 		$len = count($points);
 		$markers = array_fill(0, $len-1, null);
@@ -78,7 +84,7 @@ class Simplify {
 			$maxSqDist = 0;
 
 			for ($i = $first + 1; $i < $last; $i++) {
-				$sqDist = self::getSqSegDist($points[$i], $points[$first], $points[$last]);
+				$sqDist = $this->getSqSegDist($points[$i], $points[$first], $points[$last]);
 
 				if ($sqDist > $maxSqDist) {
 					$index = $i;
@@ -104,19 +110,20 @@ class Simplify {
 	}
 
 	// square distance from a point to a segment
-	private static function getSqSegDist($p, $p1, $p2) {
-		$x = $p1['x'];
-		$y = $p1['y'];
-		$dx = $p2['x'] - $x;
-		$dy = $p2['y'] - $y;
+	private function getSqSegDist(array $p, array $p1, array $p2): float|int
+    {
+		$x = $p1[$this->xField];
+		$y = $p1[$this->yField];
+		$dx = $p2[$this->xField] - $x;
+		$dy = $p2[$this->yField] - $y;
 
 		if (intval($dx) !== 0 || intval($dy) !== 0) {
 
-			$t = (($p['x'] - $x) * $dx + ($p['y'] - $y) * $dy) / ($dx * $dx + $dy * $dy);
+			$t = (($p[$this->xField] - $x) * $dx + ($p[$this->yField] - $y) * $dy) / ($dx * $dx + $dy * $dy);
 
 			if ($t > 1) {
-				$x = $p2['x'];
-				$y = $p2['y'];
+				$x = $p2[$this->xField];
+				$y = $p2[$this->yField];
 
 			} else if ($t > 0) {
 				$x += $dx * $t;
@@ -124,8 +131,8 @@ class Simplify {
 			}
 		}
 
-		$dx = $p['x'] - $x;
-		$dy = $p['y'] - $y;
+		$dx = $p[$this->xField] - $x;
+		$dy = $p[$this->yField] - $y;
 
 		return $dx * $dx + $dy * $dy;
 	}

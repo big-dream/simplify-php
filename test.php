@@ -1,5 +1,7 @@
 <?php
 
+use bigDream\simplify\Simplify;
+
 $points = array(
 	array('x'=>224.55,'y'=>250.15),array('x'=>226.91,'y'=>244.19),array('x'=>233.31,'y'=>241.45),array('x'=>234.98,'y'=>236.06),
 	array('x'=>244.21,'y'=>232.76),array('x'=>262.59,'y'=>215.31),array('x'=>267.76,'y'=>213.81),array('x'=>273.57,'y'=>201.84),
@@ -40,9 +42,7 @@ $simplified = array(
 	array('x'=>866.36,'y'=>480.77)
 );
 
-require 'Simplify.php';
-
 
 // TODO PHPUnit
-echo serialize($simplified) == serialize(Simplify::run($points, 5)) ? 'pass' : 'fail';
+echo serialize($simplified) == serialize((new Simplify)->run($points, 5)) ? 'pass' : 'fail';
 echo PHP_EOL;
