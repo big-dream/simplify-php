@@ -1,4 +1,5 @@
 <?php
+namespace bigDream\simplify;
 
 /**
  * Simplify path by removing extra points with given tolerance

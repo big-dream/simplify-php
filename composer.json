@@ -1,5 +1,15 @@
 {
-	"name": "andreychumak/simplify-php",
+	"name": "big-dream/simplify",
 	"license": "BSD-2-Clause",
-	"version": "1.0.2"
+	"version": "1.0.2",
+	"keywords": [
+		"polyline",
+		"simplify"
+	],
+	"autoload": {
+		"psr-4": {
+			"bigDream\\simplify\\": "src"
+		},
+		"files": []
+	}
 }
