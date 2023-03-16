@@ -9,13 +9,15 @@ Run
 
 
 ```php
-require_once 'vendor/autoload.php';
+use bigDream\simplify\Simplify;
 
-Simplify::run($points, $tolerance, $highestQuality);
-
+$simplify = new Simplify();
+$simplify->run($points, $tolerance, $highestQuality);
 ```
 
 Install
 =======
 
-composer package name is andreychumak/simplify-php
+```shell
+composer require big-dream/simplify
+```
